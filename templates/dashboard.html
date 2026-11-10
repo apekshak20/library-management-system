@@ -9,8 +9,9 @@
         <div class="stat-card">
             <div class="stat-icon bg-indigo"><i class="bi bi-journal-bookmark"></i></div>
             <div>
-                <div class="stat-label">Total Books</div>
-                <div class="stat-value">0</div>
+                <div class="stat-label">Total Books (copies)</div>
+                <div class="stat-value">{{ total_copies }}</div>
+                <div class="stat-label">{{ total_titles }} title(s)</div>
             </div>
         </div>
     </div>
@@ -19,7 +20,7 @@
             <div class="stat-icon bg-green"><i class="bi bi-people"></i></div>
             <div>
                 <div class="stat-label">Registered Students</div>
-                <div class="stat-value">0</div>
+                <div class="stat-value">{{ total_students }}</div>
             </div>
         </div>
     </div>
@@ -28,7 +29,7 @@
             <div class="stat-icon bg-orange"><i class="bi bi-box-arrow-up-right"></i></div>
             <div>
                 <div class="stat-label">Currently Issued</div>
-                <div class="stat-value">0</div>
+                <div class="stat-value">{{ currently_issued }}</div>
             </div>
         </div>
     </div>
@@ -36,8 +37,8 @@
         <div class="stat-card">
             <div class="stat-icon bg-blue"><i class="bi bi-check2-circle"></i></div>
             <div>
-                <div class="stat-label">Available Books</div>
-                <div class="stat-value">0</div>
+                <div class="stat-label">Available Books (copies)</div>
+                <div class="stat-value">{{ available_copies }}</div>
             </div>
         </div>
     </div>
@@ -46,9 +47,43 @@
 <div class="panel">
     <div class="panel-header">
         <h6 class="mb-0">Recent Transactions</h6>
+        <a href="{{ url_for('transactions.history') }}" class="btn btn-sm btn-outline-primary">View all</a>
     </div>
-    <div class="panel-body text-muted">
-        Real data will appear here in Stage 10.
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Student</th>
+                    <th>Book</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in recent %}
+                <tr>
+                    <td class="fw-semibold">{{ t.student.name }}</td>
+                    <td>{{ t.book.title }}</td>
+                    <td>{{ t.issue_date.strftime('%d %b %Y') }}</td>
+                    <td>{{ t.due_date.strftime('%d %b %Y') }}</td>
+                    <td>{{ t.return_date.strftime('%d %b %Y') if t.return_date else '-' }}</td>
+                    <td>
+                        {% if t.status == 'returned' %}
+                            <span class="badge text-bg-success">Returned</span>
+                        {% else %}
+                            <span class="badge text-bg-warning">Issued</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">No transactions yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

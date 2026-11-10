@@ -209,3 +209,51 @@ def return_book(transaction_id):
     else:
         flash(f"'{title}' returned by {student_name}.", "success")
     return redirect(url_for("transactions.return_list"))
+
+
+@transactions_bp.route("/history")
+@login_required
+def history():
+    query = request.args.get("q", "").strip()
+    status = request.args.get("status", "all")
+    page = request.args.get("page", 1, type=int)
+    today = date.today()
+
+    stmt = (
+        db.select(Transaction)
+        .join(Transaction.student)
+        .join(Transaction.book)
+        .order_by(Transaction.id.desc())
+    )
+
+    if status == "issued":
+        stmt = stmt.where(Transaction.status == "issued")
+    elif status == "returned":
+        stmt = stmt.where(Transaction.status == "returned")
+    elif status == "overdue":
+        stmt = stmt.where(Transaction.status == "issued", Transaction.due_date < today)
+    else:
+        status = "all"
+
+    if query:
+        pattern = f"%{query}%"
+        stmt = stmt.where(
+            db.or_(
+                Student.name.ilike(pattern),
+                Student.usn.ilike(pattern),
+                Book.title.ilike(pattern),
+                Book.author.ilike(pattern),
+                Book.isbn.ilike(pattern),
+            )
+        )
+
+    pagination = db.paginate(stmt, page=page, per_page=15, error_out=False)
+
+    return render_template(
+        "transactions/history.html",
+        pagination=pagination,
+        transactions=pagination.items,
+        query=query,
+        status=status,
+        today=today,
+    )

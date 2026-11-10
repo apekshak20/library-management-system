@@ -40,9 +40,11 @@
                    class="nav-item {% if request.endpoint == 'transactions.return_list' %}active{% endif %}">
                     <i class="bi bi-box-arrow-in-down-left"></i> Return Book
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ url_for('transactions.history') }}"
+                   class="nav-item {% if request.endpoint == 'transactions.history' %}active{% endif %}">
                     <i class="bi bi-clock-history"></i> Transactions
                 </a>
+               
             </nav>
 
             <div class="sidebar-footer">
