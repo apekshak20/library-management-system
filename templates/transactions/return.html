@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Return Book{% endblock %}
+{% block heading %}Return Book{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-header flex-wrap gap-2">
+        <form method="GET" action="{{ url_for('transactions.return_list') }}" class="d-flex gap-2 flex-grow-1" style="max-width: 480px;">
+            <input type="text" name="q" value="{{ query }}" class="form-control"
+                   placeholder="Search by student, USN, book or ISBN">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+            {% if query %}
+            <a href="{{ url_for('transactions.return_list') }}" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+        <a href="{{ url_for('transactions.issue_book') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Issue Book
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Student</th>
+                    <th>USN</th>
+                    <th>Book</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in transactions %}
+                <tr>
+                    <td class="fw-semibold">{{ t.student.name }}</td>
+                    <td>{{ t.student.usn }}</td>
+                    <td>{{ t.book.title }}</td>
+                    <td>{{ t.issue_date.strftime('%d %b %Y') }}</td>
+                    <td>{{ t.due_date.strftime('%d %b %Y') }}</td>
+                    <td>
+                        {% if t.due_date < today %}
+                            <span class="badge text-bg-danger">Overdue</span>
+                        {% else %}
+                            <span class="badge text-bg-warning">Issued</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <form method="POST"
+                              action="{{ url_for('transactions.return_book', transaction_id=t.id) }}"
+                              class="d-inline confirm-form"
+                              data-confirm="Mark '{{ t.book.title }}' as returned by {{ t.student.name }}?">
+                            <button type="submit" class="btn btn-sm btn-success">
+                                <i class="bi bi-box-arrow-in-down-left"></i> Return
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                        {% if query %}
+                            No issued books match "{{ query }}".
+                        {% else %}
+                            No books are currently issued.
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

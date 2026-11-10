@@ -32,10 +32,12 @@
                    class="nav-item {% if request.blueprint == 'students' %}active{% endif %}">
                     <i class="bi bi-people"></i> Students
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ url_for('transactions.issue_book') }}"
+                   class="nav-item {% if request.endpoint == 'transactions.issue_book' %}active{% endif %}">
                     <i class="bi bi-box-arrow-up-right"></i> Issue Book
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ url_for('transactions.return_list') }}"
+                   class="nav-item {% if request.endpoint == 'transactions.return_list' %}active{% endif %}">
                     <i class="bi bi-box-arrow-in-down-left"></i> Return Book
                 </a>
                 <a href="#" class="nav-item">

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Issue Book{% endblock %}
+{% block heading %}Issue Book{% endblock %}
+
+{% block content %}
+<div class="panel" style="max-width: 720px;">
+    <div class="panel-body">
+        {% if not students %}
+            <div class="alert alert-warning mb-0">
+                No students registered yet.
+                <a href="{{ url_for('students.add_student') }}">Register a student</a> first.
+            </div>
+        {% elif not books %}
+            <div class="alert alert-warning mb-0">
+                No books are available right now.
+                <a href="{{ url_for('books.list_books') }}">Check the books list</a>.
+            </div>
+        {% else %}
+        <form method="POST" action="">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="student_id" class="form-label">Student *</label>
+                    <select class="form-select" id="student_id" name="student_id" required>
+                        <option value="">-- Select a student --</option>
+                        {% for s in students %}
+                        <option value="{{ s.id }}" {% if selected.student_id == s.id|string %}selected{% endif %}>
+                            {{ s.name }} ({{ s.usn }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label for="book_id" class="form-label">Book *</label>
+                    <select class="form-select" id="book_id" name="book_id" required>
+                        <option value="">-- Select a book --</option>
+                        {% for b in books %}
+                        <option value="{{ b.id }}" {% if selected.book_id == b.id|string %}selected{% endif %}>
+                            {{ b.title }} by {{ b.author }} ({{ b.available_quantity }} available)
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text">Only books with at least one available copy are listed.</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Issue Date</label>
+                    <input type="text" class="form-control" value="Today" disabled>
+                </div>
+                <div class="col-md-6">
+                    <label for="due_date" class="form-label">Due Date *</label>
+                    <input type="date" class="form-control" id="due_date" name="due_date"
+                           min="{{ min_date }}" value="{{ selected.due_date }}" required>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Issue Book</button>
+                <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

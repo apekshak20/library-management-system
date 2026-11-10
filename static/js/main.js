@@ -34,4 +34,14 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    // Generic confirmation for forms with class "confirm-form"
+    document.querySelectorAll(".confirm-form").forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            if (!confirm(form.dataset.confirm || "Are you sure?")) {
+                event.preventDefault();
+            }
+        });
+    });
+
 });
