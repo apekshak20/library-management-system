@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Dashboard</h2>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">Logout</a>
+</div>
+
+<div class="alert alert-success">
+    Welcome, <strong>{{ current_user.username }}</strong>! You are logged in.
+</div>
+<p class="text-muted">Dashboard statistics will be added in Stage 10.</p>
+{% endblock %}

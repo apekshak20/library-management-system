@@ -13,15 +13,20 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
 
+    # Where to send people who are not logged in
+    login_manager.login_view = "auth.login"
+    login_manager.login_message = "Please log in to access this page."
+    login_manager.login_message_category = "warning"
+
     # Import models so SQLAlchemy knows about the tables
     import models  # noqa: F401
 
-    @app.route("/")
-    def home():
-        return (
-            "<h1>Library Management System</h1>"
-            "<p>Flask is running successfully ✅</p>"
-        )
+    # Register route groups (blueprints)
+    from routes.auth import auth_bp
+    from routes.dashboard import dashboard_bp
+
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(dashboard_bp)
 
     # Custom terminal command: flask init-db
     @app.cli.command("init-db")
