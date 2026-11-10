@@ -1,5 +1,5 @@
+import click
 from flask import Flask
-from sqlalchemy import text
 
 from config import Config
 from extensions import db, login_manager
@@ -13,26 +13,22 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
 
+    # Import models so SQLAlchemy knows about the tables
+    import models  # noqa: F401
+
     @app.route("/")
     def home():
         return (
             "<h1>Library Management System</h1>"
             "<p>Flask is running successfully ✅</p>"
-            "<p><a href='/db-test'>Test database connection</a></p>"
         )
 
-    # TEMPORARY route: we will delete it in the next stage
-    @app.route("/db-test")
-    def db_test():
-        try:
-            version = db.session.execute(text("SELECT version();")).scalar()
-            return f"<h1>Database connected ✅</h1><p>{version}</p>"
-        except Exception as error:
-            app.logger.error("Database connection failed: %s", error)
-            return (
-                "<h1>Database connection failed ❌</h1>"
-                "<p>Check the terminal for the full error message.</p>"
-            ), 500
+    # Custom terminal command: flask init-db
+    @app.cli.command("init-db")
+    def init_db():
+        """Create all database tables in Supabase."""
+        db.create_all()
+        click.echo("Database tables created ✅")
 
     return app
 
