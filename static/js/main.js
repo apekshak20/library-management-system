@@ -24,4 +24,14 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    // Ask for confirmation before deleting anything
+    document.querySelectorAll(".delete-form").forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            const name = form.dataset.name || "this record";
+            if (!confirm("Delete " + name + "? This cannot be undone.")) {
+                event.preventDefault();
+            }
+        });
+    });
 });

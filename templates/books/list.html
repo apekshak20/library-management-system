@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Books{% endblock %}
+{% block heading %}Books{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-header flex-wrap gap-2">
+        <form method="GET" action="{{ url_for('books.list_books') }}" class="d-flex gap-2 flex-grow-1" style="max-width: 480px;">
+            <input type="text" name="q" value="{{ query }}" class="form-control"
+                   placeholder="Search by title, author or ISBN">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+            {% if query %}
+            <a href="{{ url_for('books.list_books') }}" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+        <a href="{{ url_for('books.add_book') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Book
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>ISBN</th>
+                    <th>Category</th>
+                    <th class="text-center">Total</th>
+                    <th class="text-center">Available</th>
+                    <th class="text-center">Issued</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td class="fw-semibold">{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.isbn }}</td>
+                    <td>{{ book.category or "-" }}</td>
+                    <td class="text-center">{{ book.total_quantity }}</td>
+                    <td class="text-center">
+                        {% if book.available_quantity > 0 %}
+                            <span class="badge text-bg-success">{{ book.available_quantity }}</span>
+                        {% else %}
+                            <span class="badge text-bg-danger">0</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">{{ book.issued_quantity }}</td>
+                    <td class="text-end text-nowrap">
+                        <a href="{{ url_for('books.edit_book', book_id=book.id) }}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <form method="POST"
+                              action="{{ url_for('books.delete_book', book_id=book.id) }}"
+                              class="d-inline delete-form"
+                              data-name="{{ book.title }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted py-4">
+                        {% if query %}
+                            No books match "{{ query }}".
+                        {% else %}
+                            No books yet. Click "Add Book" to create the first one.
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

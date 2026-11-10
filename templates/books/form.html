@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ "Edit Book" if mode == "edit" else "Add Book" }}{% endblock %}
+{% block heading %}{{ "Edit Book" if mode == "edit" else "Add Book" }}{% endblock %}
+
+{% block content %}
+<div class="panel" style="max-width: 720px;">
+    <div class="panel-body">
+        <form method="POST" action="">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="title" class="form-label">Title *</label>
+                    <input type="text" class="form-control" id="title" name="title" maxlength="200"
+                           value="{{ book.title if book else '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="author" class="form-label">Author *</label>
+                    <input type="text" class="form-control" id="author" name="author" maxlength="150"
+                           value="{{ book.author if book else '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="isbn" class="form-label">ISBN *</label>
+                    <input type="text" class="form-control" id="isbn" name="isbn" maxlength="20"
+                           value="{{ book.isbn if book else '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" class="form-control" id="category" name="category" maxlength="100"
+                           value="{{ book.category if book and book.category else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="total_quantity" class="form-label">Total Quantity *</label>
+                    <input type="number" class="form-control" id="total_quantity" name="total_quantity"
+                           min="0" value="{{ book.total_quantity if book else 1 }}" required>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    {{ "Save Changes" if mode == "edit" else "Add Book" }}
+                </button>
+                <a href="{{ url_for('books.list_books') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
