@@ -26,10 +26,12 @@ def create_app():
     from routes.auth import auth_bp
     from routes.dashboard import dashboard_bp
     from routes.books import books_bp
+    from routes.students import students_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(books_bp)
+    app.register_blueprint(students_bp)
 
     # Custom terminal command: flask init-db
     @app.cli.command("init-db")

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}{{ "Edit Student" if mode == "edit" else "Register Student" }}{% endblock %}
+{% block heading %}{{ "Edit Student" if mode == "edit" else "Register Student" }}{% endblock %}
+
+{% block content %}
+<div class="panel" style="max-width: 720px;">
+    <div class="panel-body">
+        <form method="POST" action="">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="name" class="form-label">Full Name *</label>
+                    <input type="text" class="form-control" id="name" name="name" maxlength="120"
+                           value="{{ student.name if student else '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="usn" class="form-label">USN *</label>
+                    <input type="text" class="form-control" id="usn" name="usn" maxlength="20"
+                           value="{{ student.usn if student else '' }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="department" class="form-label">Department</label>
+                    <input type="text" class="form-control" id="department" name="department" maxlength="100"
+                           value="{{ student.department if student and student.department else '' }}">
+                </div>
+                <div class="col-12">
+                    <label for="email" class="form-label">Email *</label>
+                    <input type="email" class="form-control" id="email" name="email" maxlength="120"
+                           value="{{ student.email if student else '' }}" required>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    {{ "Save Changes" if mode == "edit" else "Register Student" }}
+                </button>
+                <a href="{{ url_for('students.list_students') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
